@@ -14,8 +14,8 @@
 #define CLK PA0//pins definitions for TM1637 and can be changed to other ports
 #define DIO PA1
 #define ModeSetup 1
-#define ModeOpe 2
-#define ModeCoutD 3
+#define ModeOpe 3
+#define ModeCoutD 2
 #define OZ_UV 0
 #define OZ 1
 #define UV 2
@@ -25,9 +25,9 @@
 #define T180 3
 #define Tim 2
 #define Ope 1
+#define FAN_SPEED 250000
 
 TM1637 Disp7(CLK,DIO);
-int8_t NumTab[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};//0~9,A,b,C,d,E,F
 int8_t ListDisp[4];
 byte Time_Display[4][3] = {{0x7f,3,0}, {0x7f,6,0}, {1,2,0}, {1,8,0}};
 byte MainMode = ModeSetup;
@@ -37,10 +37,16 @@ unsigned int SegmentBlinkTime = 500;
 byte SegBlinkMode = 0;
 byte SetupMode = Ope;
 unsigned long CurrentSegBlinkMill = millis()- SegmentBlinkTime, CurrentSW_S = millis(), CurrentSW_U = millis();
-byte TimeOpe[4] = {30, 60, 120, 180};
+byte TimeOpe[4] = {30, 60, 120, 180}, OpeUvTime, OpeOzTime;
+int CountDownmodeTime = 30; //Secound
+unsigned long CurrentCountDownMill, CurrentOpeMill, CurrentF_FanMill;
 
 void Seven_Segment_Display(void);
 void SetupModeDisp(int SegmentBlinkMode);
+void SegmentNumberDisp(unsigned int Numb);
+void TrunOnOzone(void);
+void TrunOnUV(void);
+void TrunOffAll(void);
 
 void setup() {
   Disp7.init();
@@ -99,18 +105,93 @@ void loop() {
         delay(1);
       }
       if(i>=3000){
-        MainMode = ModeOpe;
-        Serial.println("Oprating Mode");
+        MainMode = ModeCoutD;
+        Serial.println("Count Down Mode");
+        CurrentCountDownMill = millis();
       }
       Serial.println(i);
     }
   }
-  if(MainMode == ModeCoutD){
-    byte TimeCount = 30;
-    
+
+  else if(MainMode == ModeCoutD){
+    SegmentNumberDisp(CountDownmodeTime);
+    if(CurrentCountDownMill+1000 >= millis()){
+      CountDownmodeTime--;
+      if(CountDownmodeTime<0){
+        SetupModeDisp(SegBlinkMode);
+        Serial.println("Operating Mode");
+        MainMode = ModeOpe;
+        //cleardisplay============
+        switch (OpeMode){
+        case OZ_UV:
+          OpeUvTime = TimeOpe[TimeMode]/2;
+          OpeOzTime = OpeUvTime;
+          SegmentNumberDisp(OpeOzTime);
+          TrunOnOzone();
+          digitalWrite(F_FAN, HIGH);
+          break;
+        case OZ:
+          OpeUvTime = 0;
+          OpeOzTime = TimeOpe[TimeMode];
+          SegmentNumberDisp(OpeOzTime);
+          TrunOnOzone();
+          digitalWrite(F_FAN, HIGH);
+          break;
+        case UV:
+          OpeUvTime = TimeOpe[TimeMode];
+          OpeOzTime = 0;
+          SegmentNumberDisp(OpeUvTime);
+          TrunOnUV();
+          break;
+        default:
+          TrunOffAll();
+          break;
+        }
+        CurrentOpeMill = millis()+60000;
+        CurrentF_FanMill = millis()+30000;
+      }
+    }
   }
 
-
+  else if(MainMode == ModeOpe){
+    
+    if(OpeOzTime > 0){
+      if(CurrentOpeMill>=millis()){
+        OpeOzTime--;
+        CurrentOpeMill=CurrentOpeMill+60000;
+        SegmentNumberDisp(OpeOzTime);
+        if(OpeOzTime<=0){
+          if(OpeUvTime==0) {
+            TrunOffAll();
+            MainMode = ModeSetup;
+          }
+          else if(OpeUvTime > 0){
+            SegmentNumberDisp(OpeUvTime);
+            TrunOnUV();
+          }
+        }
+      }
+      if(CurrentF_FanMill>=millis()){
+        if(digitalRead(F_FAN)){
+          digitalWrite(F_FAN, LOW);
+          CurrentF_FanMill += 240000;
+        }
+        else{
+          digitalWrite(F_FAN, HIGH);
+          CurrentF_FanMill += 30000;
+        }
+      }
+    }
+    else if((OpeUvTime > 0) && (CurrentOpeMill>=millis())){
+      OpeUvTime--;
+      CurrentOpeMill=CurrentOpeMill+60000;
+      SegmentNumberDisp(OpeUvTime);
+      if(OpeUvTime<=0){
+        TrunOffAll();
+        MainMode = ModeSetup;
+      }
+    }
+  }
 }
 
 void Seven_Segment_Display(void){
@@ -142,8 +223,45 @@ void SetupModeDisp(byte BlinkMode){
   Seven_Segment_Display();
 }
 
-void SegmentNumberDisp(byte Numb){
-  if(Numb>=1000){
-    
-  }
+void SegmentNumberDisp(unsigned int Numb){
+  unsigned int tempNumb = Numb;
+  ListDisp[3] = Numb%10;
+  tempNumb = tempNumb/10;
+  if(Numb<10) ListDisp[2] = 0x7f;
+  else ListDisp[2] = tempNumb%10;
+  tempNumb = tempNumb/10;
+  if(Numb<100) ListDisp[1] = 0x7f;
+  else ListDisp[1] = tempNumb%10;
+  tempNumb = tempNumb/10;
+  if(Numb<1000) ListDisp[0] = 0x7f;
+  else ListDisp[0] = tempNumb%10;
+
+  Seven_Segment_Display();
+}
+
+void TrunOnOzone(void){
+  digitalWrite(R_LED, HIGH);
+  pwmWrite(OZ_FAN1, FAN_SPEED);
+  pwmWrite(OZ_FAN2, FAN_SPEED);
+  digitalWrite(OZ_LAMP, HIGH);
+}
+
+void TrunOnUV(void){
+  digitalWrite(G_LED, HIGH);
+  pwmWrite(UV_FAN1, FAN_SPEED);
+  pwmWrite(UV_FAN2, FAN_SPEED);
+  digitalWrite(UV_LAMP, HIGH);
+}
+
+void TrunOffAll(void){
+  digitalWrite(R_LED, LOW);
+  pwmWrite(OZ_FAN1, 0);
+  pwmWrite(OZ_FAN2, 0);
+  digitalWrite(OZ_LAMP, LOW);
+  digitalWrite(F_FAN, LOW);
+
+  digitalWrite(G_LED, LOW);
+  pwmWrite(UV_FAN1, 0);
+  pwmWrite(UV_FAN2, 0);
+  digitalWrite(UV_LAMP, LOW);
 }
