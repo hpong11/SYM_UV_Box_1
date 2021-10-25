@@ -14,8 +14,9 @@
 #define CLK PA0//pins definitions for TM1637 and can be changed to other ports
 #define DIO PA1
 #define ModeSetup 1
-#define ModeOpe 3
 #define ModeCoutD 2
+#define ModeOpe 3
+#define ModePause 4
 #define OZ_UV 0
 #define OZ 1
 #define UV 2
@@ -25,11 +26,11 @@
 #define T180 3
 #define Tim 2
 #define Ope 1
-#define FAN_SPEED 250000
+#define FAN_SPEED 20000
 
 TM1637 Disp7(CLK,DIO);
 int8_t ListDisp[4];
-byte Time_Display[4][3] = {{0x7f,3,0}, {0x7f,6,0}, {1,2,0}, {1,8,0}};
+byte Time_Display[5][3] = {{0x7f,0x7f,2}, {0x7f,3,0}, {0x7f,6,0}, {1,2,0}, {1,8,0}};
 byte MainMode = ModeSetup;
 byte OpeMode = OZ_UV;
 byte TimeMode = T30;
@@ -37,9 +38,11 @@ unsigned int SegmentBlinkTime = 500;
 byte SegBlinkMode = 0;
 byte SetupMode = Ope;
 unsigned long CurrentSegBlinkMill = millis()- SegmentBlinkTime, CurrentSW_S = millis(), CurrentSW_U = millis();
-byte TimeOpe[4] = {30, 60, 120, 180}, OpeUvTime, OpeOzTime;
-int CountDownmodeTime = 30; //Secound
+byte TimeOpe[5] = {2, 30, 60, 120, 180}, OpeUvTime, OpeOzTime;
+int CountDownmodeTime; //Secound
 unsigned long CurrentCountDownMill, CurrentOpeMill, CurrentF_FanMill;
+unsigned long CurrentPauseStartMill, CurrentPauseBlink;
+byte PauseBlinkStatus;
 
 void Seven_Segment_Display(void);
 void SetupModeDisp(int SegmentBlinkMode);
@@ -69,6 +72,7 @@ void setup() {
   pinMode(OZ_FAN2, PWM);
   pinMode(UV_LAMP, OUTPUT);
   pinMode(OZ_LAMP, OUTPUT);
+  TrunOffAll();
   Timer1.setPrescaleFactor(40);
   Timer1.setOverflow(65454);
   SetupModeDisp(SegBlinkMode);
@@ -80,75 +84,81 @@ void loop() {
   
   if(MainMode == ModeSetup){
     SetupModeDisp(SegBlinkMode);
-    if((digitalRead(SW_S) == 0) && (millis()-CurrentSW_S>=500)){
+    if((digitalRead(SW_S) == 0) && (millis()-CurrentSW_S>=300)){
       CurrentSW_S = millis();
-      if(SetupMode==Tim){
-        if(TimeMode==3) TimeMode=0;
-        else TimeMode++;
-      }
+      if(TimeMode==4) TimeMode=0;
+      else TimeMode++;
       SetupModeDisp(SegBlinkMode);
     }
-    if((digitalRead(SW_U) == 0) && (millis()-CurrentSW_U>=500)){
+    if((digitalRead(SW_U) == 0) && (millis()-CurrentSW_U>=300)){
       CurrentSW_U = millis();
-      if(SetupMode==Ope){
-        if(OpeMode==2) OpeMode=0;
-        else OpeMode++;
-      }
+      if(OpeMode==2) OpeMode=0;
+      else OpeMode++;
       SetupModeDisp(SegBlinkMode);
     }
     
     if(digitalRead(SW_E) == 0){
       int i=0;
-      for (i;i<=3000;i++){
+      for (i;i<=2000;i++){
         if(digitalRead(SW_E) != 0)
         break;
         delay(1);
       }
-      if(i>=3000){
+      if(i>=2000){
         MainMode = ModeCoutD;
         Serial.println("Count Down Mode");
-        CurrentCountDownMill = millis();
-      }
-      Serial.println(i);
-    }
-  }
-
-  else if(MainMode == ModeCoutD){
-    SegmentNumberDisp(CountDownmodeTime);
-    if(CurrentCountDownMill+1000 >= millis()){
-      CountDownmodeTime--;
-      if(CountDownmodeTime<0){
-        SetupModeDisp(SegBlinkMode);
-        Serial.println("Operating Mode");
-        MainMode = ModeOpe;
-        //cleardisplay============
+        CurrentCountDownMill = millis()+1000;
+        CountDownmodeTime = 5;
         switch (OpeMode){
         case OZ_UV:
           OpeUvTime = TimeOpe[TimeMode]/2;
           OpeOzTime = OpeUvTime;
-          SegmentNumberDisp(OpeOzTime);
-          TrunOnOzone();
-          digitalWrite(F_FAN, HIGH);
           break;
         case OZ:
           OpeUvTime = 0;
           OpeOzTime = TimeOpe[TimeMode];
-          SegmentNumberDisp(OpeOzTime);
-          TrunOnOzone();
-          digitalWrite(F_FAN, HIGH);
           break;
         case UV:
           OpeUvTime = TimeOpe[TimeMode];
-          OpeOzTime = 0;
-          SegmentNumberDisp(OpeUvTime);
-          TrunOnUV();
+          OpeOzTime = 0; 
           break;
         default:
           TrunOffAll();
           break;
         }
+      }
+    }
+  }
+
+  else if(MainMode == ModeCoutD){
+    SegmentNumberDisp(CountDownmodeTime);
+    if(CurrentCountDownMill <= millis()){
+      CurrentCountDownMill += 1000;
+      CountDownmodeTime--;
+      if(CountDownmodeTime<0){
+        Serial.println("Operating Mode");
+        MainMode = ModeOpe;
+        if(OpeOzTime>0) SegmentNumberDisp(OpeOzTime);
+        else if (OpeUvTime>0){
+          SegmentNumberDisp(OpeUvTime);
+          TrunOnUV();
+        }
         CurrentOpeMill = millis()+60000;
-        CurrentF_FanMill = millis()+30000;
+        CurrentF_FanMill = millis();
+      }
+    }
+    if((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)) {
+      int i=0;
+      for (i;i<=100;i++){
+        if((digitalRead(SW_U) != 0)&&(digitalRead(SW_S) != 0))
+        break;
+        delay(1);
+      }
+      if(i>=100){
+        MainMode = ModeSetup;
+        SetupModeDisp(SegBlinkMode);
+        while((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0));
+        Serial.println("Setup Mode");
       }
     }
   }
@@ -156,39 +166,111 @@ void loop() {
   else if(MainMode == ModeOpe){
     
     if(OpeOzTime > 0){
-      if(CurrentOpeMill>=millis()){
+      TrunOnOzone();
+      if(CurrentOpeMill<=millis()){
         OpeOzTime--;
         CurrentOpeMill=CurrentOpeMill+60000;
         SegmentNumberDisp(OpeOzTime);
         if(OpeOzTime<=0){
-          if(OpeUvTime==0) {
-            TrunOffAll();
-            MainMode = ModeSetup;
-          }
+          TrunOffAll();
+          if(OpeUvTime==0) MainMode = ModeSetup;
           else if(OpeUvTime > 0){
             SegmentNumberDisp(OpeUvTime);
+            digitalWrite(F_FAN, LOW);
             TrunOnUV();
           }
         }
       }
-      if(CurrentF_FanMill>=millis()){
+      if(CurrentF_FanMill<=millis()){
         if(digitalRead(F_FAN)){
           digitalWrite(F_FAN, LOW);
           CurrentF_FanMill += 240000;
+          Serial.println("F_Fan Off");
+          Serial.println(millis());
+          Serial.println();
         }
         else{
           digitalWrite(F_FAN, HIGH);
           CurrentF_FanMill += 30000;
+          Serial.println("F_Fan On");
+          Serial.println(millis());
+          Serial.println();
         }
       }
     }
-    else if((OpeUvTime > 0) && (CurrentOpeMill>=millis())){
+    else if((OpeUvTime > 0) && (CurrentOpeMill<=millis())){ 
       OpeUvTime--;
       CurrentOpeMill=CurrentOpeMill+60000;
       SegmentNumberDisp(OpeUvTime);
       if(OpeUvTime<=0){
         TrunOffAll();
         MainMode = ModeSetup;
+      }
+    }
+    if((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)||(digitalRead(SW_E) == 0)) {
+      int i=0;
+      for (i;i<=100;i++){
+        if((digitalRead(SW_U) != 0)&&(digitalRead(SW_S) != 0)&&(digitalRead(SW_E) != 0))
+        break;
+        delay(1);
+      }
+      if(i>=100){
+        TrunOffAll();
+        MainMode = ModePause;
+        CurrentPauseStartMill = millis();
+        CurrentPauseBlink = CurrentPauseStartMill + 500;
+        PauseBlinkStatus = 0;
+        Disp7.clearDisplay();
+        Serial.println("Mode Pause");
+        while((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)||(digitalRead(SW_E) == 0));
+      }
+    }
+  }
+  
+  if(MainMode == ModePause){
+    if(CurrentPauseBlink <= millis()){
+      CurrentPauseBlink += 500;
+      if(PauseBlinkStatus){
+        PauseBlinkStatus = 0;
+        Disp7.clearDisplay();
+      }
+      else{
+        PauseBlinkStatus = 1;
+        if(OpeOzTime>0) SegmentNumberDisp(OpeOzTime);
+        else if (OpeUvTime>0) SegmentNumberDisp(OpeUvTime);
+      }
+    }
+    if(CurrentPauseStartMill+300000 <= millis()) MainMode = ModeSetup;
+    if((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)) {
+      int i=0;
+      for (i;i<=1000;i++){
+        if((digitalRead(SW_U) != 0)&&(digitalRead(SW_S) != 0))
+        break;
+        delay(1);
+      }
+      if(i>=1000){
+        MainMode = ModeSetup;
+        SetupModeDisp(SegBlinkMode);
+        while((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0));
+        Serial.println("Setup Mode");
+      }
+    }
+    if(digitalRead(SW_E) == 0){
+      PauseBlinkStatus = 1;
+      if(OpeOzTime>0) SegmentNumberDisp(OpeOzTime);
+      else if (OpeUvTime>0) SegmentNumberDisp(OpeUvTime);
+      int i=0;
+      for (i;i<=2000;i++){
+        if((digitalRead(SW_E) != 0))
+        break;
+        delay(1);
+      }
+      if(i>=2000) {
+        Disp7.clearDisplay();
+        MainMode = ModeCoutD; 
+        Serial.println("Count Down Mode");
+        CurrentCountDownMill = millis()+1000;
+        CountDownmodeTime = 5;
       }
     }
   }
@@ -243,11 +325,15 @@ void TrunOnOzone(void){
   digitalWrite(R_LED, HIGH);
   pwmWrite(OZ_FAN1, FAN_SPEED);
   pwmWrite(OZ_FAN2, FAN_SPEED);
+  pwmWrite(UV_FAN1, FAN_SPEED);
+  pwmWrite(UV_FAN2, FAN_SPEED);
   digitalWrite(OZ_LAMP, HIGH);
 }
 
 void TrunOnUV(void){
   digitalWrite(G_LED, HIGH);
+  pwmWrite(OZ_FAN1, FAN_SPEED);
+  pwmWrite(OZ_FAN2, FAN_SPEED);
   pwmWrite(UV_FAN1, FAN_SPEED);
   pwmWrite(UV_FAN2, FAN_SPEED);
   digitalWrite(UV_LAMP, HIGH);
