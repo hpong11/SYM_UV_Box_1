@@ -1,0 +1,576 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Untitled-rescue:stm32f103c8t6-module-china-stm32f103c8t6-module-china U1
+U 1 1 611E0C92
+P 5500 2900
+F 0 "U1" H 5500 4637 60  0000 C CNN
+F 1 "stm32f103c8t6-module-china" H 5500 4531 60  0000 C CNN
+F 2 "MyFootprint:Stm32f103_module" H 5500 1200 60  0001 C CNN
+F 3 "" H 5100 3150 60  0000 C CNN
+	1    5500 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x04_Male J1
+U 1 1 6122922A
+P 2650 2700
+F 0 "J1" H 2758 2981 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2758 2890 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 2650 2700 50  0001 C CNN
+F 3 "~" H 2650 2700 50  0001 C CNN
+	1    2650 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J2
+U 1 1 61277107
+P 2950 800
+F 0 "J2" H 3030 792 50  0000 L CNN
+F 1 "Power_IN" H 3030 701 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 2950 800 50  0001 C CNN
+F 3 "~" H 2950 800 50  0001 C CNN
+	1    2950 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L UVC_Sym:LM2596S_Module M1
+U 1 1 61278BAA
+P 2950 1650
+F 0 "M1" H 2950 1925 50  0000 C CNN
+F 1 "LM2596S_Module" H 2950 1834 50  0000 C CNN
+F 2 "Untitled:HW-411" H 2650 1900 50  0001 C CNN
+F 3 "" H 2650 1900 50  0001 C CNN
+	1    2950 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0101
+U 1 1 6127D1F5
+P 2750 800
+F 0 "#PWR0101" H 2750 650 50  0001 C CNN
+F 1 "+12V" H 2765 973 50  0000 C CNN
+F 2 "" H 2750 800 50  0001 C CNN
+F 3 "" H 2750 800 50  0001 C CNN
+	1    2750 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0102
+U 1 1 6127DB8E
+P 2500 1550
+F 0 "#PWR0102" H 2500 1400 50  0001 C CNN
+F 1 "+12V" H 2515 1723 50  0000 C CNN
+F 2 "" H 2500 1550 50  0001 C CNN
+F 3 "" H 2500 1550 50  0001 C CNN
+	1    2500 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 1550 2500 1600
+Wire Wire Line
+	2500 1600 2600 1600
+$Comp
+L power:GND #PWR0105
+U 1 1 61284662
+P 3300 1750
+F 0 "#PWR0105" H 3300 1500 50  0001 C CNN
+F 1 "GND" H 3305 1577 50  0000 C CNN
+F 2 "" H 3300 1750 50  0001 C CNN
+F 3 "" H 3300 1750 50  0001 C CNN
+	1    3300 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0106
+U 1 1 61284E83
+P 3400 1550
+F 0 "#PWR0106" H 3400 1400 50  0001 C CNN
+F 1 "+5V" H 3415 1723 50  0000 C CNN
+F 2 "" H 3400 1550 50  0001 C CNN
+F 3 "" H 3400 1550 50  0001 C CNN
+	1    3400 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 1600 3400 1600
+Wire Wire Line
+	3400 1600 3400 1550
+$Comp
+L power:GND #PWR0107
+U 1 1 61285DB6
+P 4000 4200
+F 0 "#PWR0107" H 4000 3950 50  0001 C CNN
+F 1 "GND" H 4005 4027 50  0000 C CNN
+F 2 "" H 4000 4200 50  0001 C CNN
+F 3 "" H 4000 4200 50  0001 C CNN
+	1    4000 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4000 4200 4450 4200
+$Comp
+L power:GND #PWR0108
+U 1 1 61289C69
+P 6800 1500
+F 0 "#PWR0108" H 6800 1250 50  0001 C CNN
+F 1 "GND" H 6805 1327 50  0000 C CNN
+F 2 "" H 6800 1500 50  0001 C CNN
+F 3 "" H 6800 1500 50  0001 C CNN
+	1    6800 1500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6800 1500 6600 1500
+Wire Wire Line
+	4450 4050 4100 4050
+$Comp
+L power:+5V #PWR0109
+U 1 1 61288DC5
+P 4100 4050
+F 0 "#PWR0109" H 4100 3900 50  0001 C CNN
+F 1 "+5V" V 4115 4178 50  0000 L CNN
+F 2 "" H 4100 4050 50  0001 C CNN
+F 3 "" H 4100 4050 50  0001 C CNN
+	1    4100 4050
+	0    -1   -1   0   
+$EndComp
+Text GLabel 2850 2900 2    50   Input ~ 0
+RX2
+Text GLabel 6550 3300 2    50   Input ~ 0
+RX2
+Text GLabel 2850 2800 2    50   Input ~ 0
+TX2
+Text GLabel 6550 3450 2    50   Input ~ 0
+TX2
+$Comp
+L power:+3V3 #PWR0112
+U 1 1 612CB145
+P 4450 4350
+F 0 "#PWR0112" H 4450 4200 50  0001 C CNN
+F 1 "+3V3" V 4465 4478 50  0000 L CNN
+F 2 "" H 4450 4350 50  0001 C CNN
+F 3 "" H 4450 4350 50  0001 C CNN
+	1    4450 4350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3V3 #PWR0113
+U 1 1 612CC986
+P 3150 2600
+F 0 "#PWR0113" H 3150 2450 50  0001 C CNN
+F 1 "+3V3" H 3165 2773 50  0000 C CNN
+F 2 "" H 3150 2600 50  0001 C CNN
+F 3 "" H 3150 2600 50  0001 C CNN
+	1    3150 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 2700 3150 2750
+Wire Wire Line
+	2850 2600 3150 2600
+Wire Wire Line
+	3150 2700 2850 2700
+$Comp
+L Connector:Screw_Terminal_01x02 J3
+U 1 1 612D50EC
+P 8100 1400
+F 0 "J3" H 8180 1392 50  0000 L CNN
+F 1 "SW_1" H 8180 1301 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 8100 1400 50  0001 C CNN
+F 3 "~" H 8100 1400 50  0001 C CNN
+	1    8100 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J5
+U 1 1 612D66EE
+P 8100 2000
+F 0 "J5" H 8180 1992 50  0000 L CNN
+F 1 "SW_3" H 8180 1901 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 8100 2000 50  0001 C CNN
+F 3 "~" H 8100 2000 50  0001 C CNN
+	1    8100 2000
+	1    0    0    -1  
+$EndComp
+Text GLabel 7900 1400 0    50   Input ~ 0
+PB12
+Text GLabel 7900 1700 0    50   Input ~ 0
+PB13
+Text GLabel 7900 2000 0    50   Input ~ 0
+PB14
+Text GLabel 4450 1500 0    50   Input ~ 0
+PB12
+Text GLabel 4450 1650 0    50   Input ~ 0
+PB13
+Text GLabel 4450 1800 0    50   Input ~ 0
+PB14
+$Comp
+L power:GND #PWR01
+U 1 1 612D7956
+P 7550 2100
+F 0 "#PWR01" H 7550 1850 50  0001 C CNN
+F 1 "GND" H 7555 1927 50  0000 C CNN
+F 2 "" H 7550 2100 50  0001 C CNN
+F 3 "" H 7550 2100 50  0001 C CNN
+	1    7550 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7550 2100 7900 2100
+Wire Wire Line
+	7900 1800 7550 1800
+Wire Wire Line
+	7550 1800 7550 2100
+Connection ~ 7550 2100
+Wire Wire Line
+	7900 1500 7550 1500
+Wire Wire Line
+	7550 1500 7550 1800
+Connection ~ 7550 1800
+$Comp
+L Connector:Screw_Terminal_01x02 J6
+U 1 1 612D9DE5
+P 8100 2700
+F 0 "J6" H 8180 2692 50  0000 L CNN
+F 1 "Blue LED" H 8180 2601 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 8100 2700 50  0001 C CNN
+F 3 "~" H 8100 2700 50  0001 C CNN
+	1    8100 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J7
+U 1 1 612DA2A8
+P 8100 3150
+F 0 "J7" H 8180 3142 50  0000 L CNN
+F 1 "Yellow LED" H 8180 3051 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 8100 3150 50  0001 C CNN
+F 3 "~" H 8100 3150 50  0001 C CNN
+	1    8100 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R1
+U 1 1 612DAC3B
+P 7650 2700
+F 0 "R1" V 7445 2700 50  0000 C CNN
+F 1 "R_US" V 7536 2700 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 7690 2690 50  0001 C CNN
+F 3 "~" H 7650 2700 50  0001 C CNN
+	1    7650 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_US R2
+U 1 1 612DB4AA
+P 7650 3150
+F 0 "R2" V 7445 3150 50  0000 C CNN
+F 1 "R_US" V 7536 3150 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 7690 3140 50  0001 C CNN
+F 3 "~" H 7650 3150 50  0001 C CNN
+	1    7650 3150
+	0    1    1    0   
+$EndComp
+Text GLabel 7500 2700 0    50   Input ~ 0
+B_LED
+Text GLabel 7500 3150 0    50   Input ~ 0
+Y_LED
+$Comp
+L power:GND #PWR03
+U 1 1 612DC017
+P 7900 3250
+F 0 "#PWR03" H 7900 3000 50  0001 C CNN
+F 1 "GND" H 7905 3077 50  0000 C CNN
+F 2 "" H 7900 3250 50  0001 C CNN
+F 3 "" H 7900 3250 50  0001 C CNN
+	1    7900 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR02
+U 1 1 612DC46D
+P 7900 2800
+F 0 "#PWR02" H 7900 2550 50  0001 C CNN
+F 1 "GND" H 7905 2627 50  0000 C CNN
+F 2 "" H 7900 2800 50  0001 C CNN
+F 3 "" H 7900 2800 50  0001 C CNN
+	1    7900 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7800 2700 7900 2700
+Wire Wire Line
+	7800 3150 7900 3150
+Text GLabel 4450 2100 0    50   Input ~ 0
+B_LED
+Text GLabel 6550 3150 2    50   Input ~ 0
+Y_LED
+$Comp
+L Connector:Screw_Terminal_01x04 J8
+U 1 1 612DD7D5
+P 8100 3950
+F 0 "J8" H 8180 3942 50  0000 L CNN
+F 1 "Relay" H 8180 3851 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-4_1x04_P5.00mm_Horizontal" H 8100 3950 50  0001 C CNN
+F 3 "~" H 8100 3950 50  0001 C CNN
+	1    8100 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J4
+U 1 1 612D5B9F
+P 8100 1700
+F 0 "J4" H 8180 1692 50  0000 L CNN
+F 1 "SW_2" H 8180 1601 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 8100 1700 50  0001 C CNN
+F 3 "~" H 8100 1700 50  0001 C CNN
+	1    8100 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR05
+U 1 1 612DF7F1
+P 7900 4150
+F 0 "#PWR05" H 7900 3900 50  0001 C CNN
+F 1 "GND" H 7905 3977 50  0000 C CNN
+F 2 "" H 7900 4150 50  0001 C CNN
+F 3 "" H 7900 4150 50  0001 C CNN
+	1    7900 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR04
+U 1 1 612DFBFB
+P 7900 3850
+F 0 "#PWR04" H 7900 3700 50  0001 C CNN
+F 1 "+5V" H 7915 4023 50  0000 C CNN
+F 2 "" H 7900 3850 50  0001 C CNN
+F 3 "" H 7900 3850 50  0001 C CNN
+	1    7900 3850
+	1    0    0    -1  
+$EndComp
+Text GLabel 7900 4050 0    50   Input ~ 0
+PB5
+Text GLabel 7900 3950 0    50   Input ~ 0
+PB8
+Text GLabel 4450 3750 0    50   Input ~ 0
+PB8
+Text GLabel 4450 3300 0    50   Input ~ 0
+PB5
+$Comp
+L Connector:Screw_Terminal_01x04 J9
+U 1 1 612E4095
+P 2950 4150
+F 0 "J9" H 2868 3725 50  0000 C CNN
+F 1 "L298_1" H 2868 3816 50  0000 C CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-4_1x04_P5.00mm_Horizontal" H 2950 4150 50  0001 C CNN
+F 3 "~" H 2950 4150 50  0001 C CNN
+	1    2950 4150
+	-1   0    0    1   
+$EndComp
+Text GLabel 3150 4250 2    50   Input ~ 0
+PB1
+Text GLabel 3150 4050 2    50   Input ~ 0
+PB10
+Text GLabel 3150 3950 2    50   Input ~ 0
+PB0
+Wire Wire Line
+	3150 4150 3550 4150
+$Comp
+L Connector:Screw_Terminal_01x04 J10
+U 1 1 612E66A2
+P 2950 4950
+F 0 "J10" H 2868 4525 50  0000 C CNN
+F 1 "L298_2" H 2868 4616 50  0000 C CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-4_1x04_P5.00mm_Horizontal" H 2950 4950 50  0001 C CNN
+F 3 "~" H 2950 4950 50  0001 C CNN
+	1    2950 4950
+	-1   0    0    1   
+$EndComp
+Text GLabel 3150 5050 2    50   Input ~ 0
+PA6
+Text GLabel 3150 4850 2    50   Input ~ 0
+PB11
+Text GLabel 3150 4750 2    50   Input ~ 0
+PA7
+$Comp
+L power:GND #PWR0110
+U 1 1 612E82FB
+P 3550 4150
+F 0 "#PWR0110" H 3550 3900 50  0001 C CNN
+F 1 "GND" H 3555 3977 50  0000 C CNN
+F 2 "" H 3550 4150 50  0001 C CNN
+F 3 "" H 3550 4150 50  0001 C CNN
+	1    3550 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0114
+U 1 1 612E86AC
+P 3150 2750
+F 0 "#PWR0114" H 3150 2500 50  0001 C CNN
+F 1 "GND" H 3155 2577 50  0000 C CNN
+F 2 "" H 3150 2750 50  0001 C CNN
+F 3 "" H 3150 2750 50  0001 C CNN
+	1    3150 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0115
+U 1 1 612E8B0E
+P 3500 4950
+F 0 "#PWR0115" H 3500 4700 50  0001 C CNN
+F 1 "GND" H 3505 4777 50  0000 C CNN
+F 2 "" H 3500 4950 50  0001 C CNN
+F 3 "" H 3500 4950 50  0001 C CNN
+	1    3500 4950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 4950 3500 4950
+$Comp
+L Connector:Screw_Terminal_01x04 J11
+U 1 1 612E94C6
+P 2950 5750
+F 0 "J11" H 2868 5325 50  0000 C CNN
+F 1 "L298_3" H 2868 5416 50  0000 C CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-4_1x04_P5.00mm_Horizontal" H 2950 5750 50  0001 C CNN
+F 3 "~" H 2950 5750 50  0001 C CNN
+	1    2950 5750
+	-1   0    0    1   
+$EndComp
+Text GLabel 3150 5650 2    50   Input ~ 0
+PA15
+$Comp
+L power:GND #PWR0116
+U 1 1 612EA11D
+P 3450 5750
+F 0 "#PWR0116" H 3450 5500 50  0001 C CNN
+F 1 "GND" H 3455 5577 50  0000 C CNN
+F 2 "" H 3450 5750 50  0001 C CNN
+F 3 "" H 3450 5750 50  0001 C CNN
+	1    3450 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 5750 3450 5750
+$Comp
+L Connector:Screw_Terminal_01x02 J12
+U 1 1 612EE48C
+P 3850 800
+F 0 "J12" H 3930 792 50  0000 L CNN
+F 1 "Power_OUT" H 3930 701 50  0000 L CNN
+F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal" H 3850 800 50  0001 C CNN
+F 3 "~" H 3850 800 50  0001 C CNN
+	1    3850 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0118
+U 1 1 612EF0B9
+P 3650 800
+F 0 "#PWR0118" H 3650 650 50  0001 C CNN
+F 1 "+12V" H 3665 973 50  0000 C CNN
+F 2 "" H 3650 800 50  0001 C CNN
+F 3 "" H 3650 800 50  0001 C CNN
+	1    3650 800 
+	1    0    0    -1  
+$EndComp
+Text GLabel 6550 2550 2    50   Input ~ 0
+PB0
+Text GLabel 6550 2250 2    50   Input ~ 0
+PB10
+Text GLabel 6550 2400 2    50   Input ~ 0
+PB1
+Text GLabel 6550 2700 2    50   Input ~ 0
+PA7
+Text GLabel 6550 2100 2    50   Input ~ 0
+PB11
+Text GLabel 6550 2850 2    50   Input ~ 0
+PA6
+Text GLabel 4450 2850 0    50   Input ~ 0
+PA15
+NoConn ~ 6550 1950
+NoConn ~ 6550 3000
+NoConn ~ 6550 3600
+NoConn ~ 6550 3750
+NoConn ~ 6550 3900
+NoConn ~ 6550 4050
+NoConn ~ 6550 4200
+NoConn ~ 6550 4350
+NoConn ~ 4450 3900
+NoConn ~ 4450 3600
+NoConn ~ 4450 3450
+NoConn ~ 4450 3150
+NoConn ~ 4450 3000
+NoConn ~ 4450 2700
+NoConn ~ 4450 2550
+NoConn ~ 4450 2400
+NoConn ~ 4450 2250
+NoConn ~ 4450 1950
+$Comp
+L power:GND #PWR0103
+U 1 1 6135376E
+P 2600 1750
+F 0 "#PWR0103" H 2600 1500 50  0001 C CNN
+F 1 "GND" H 2605 1577 50  0000 C CNN
+F 2 "" H 2600 1750 50  0001 C CNN
+F 3 "" H 2600 1750 50  0001 C CNN
+	1    2600 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0104
+U 1 1 61353B05
+P 2750 900
+F 0 "#PWR0104" H 2750 650 50  0001 C CNN
+F 1 "GND" H 2755 727 50  0000 C CNN
+F 2 "" H 2750 900 50  0001 C CNN
+F 3 "" H 2750 900 50  0001 C CNN
+	1    2750 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0111
+U 1 1 61353DF9
+P 3650 900
+F 0 "#PWR0111" H 3650 650 50  0001 C CNN
+F 1 "GND" H 3655 727 50  0000 C CNN
+F 2 "" H 3650 900 50  0001 C CNN
+F 3 "" H 3650 900 50  0001 C CNN
+	1    3650 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR0117
+U 1 1 61359388
+P 6550 1800
+F 0 "#PWR0117" H 6550 1650 50  0001 C CNN
+F 1 "+3V3" V 6565 1928 50  0000 L CNN
+F 2 "" H 6550 1800 50  0001 C CNN
+F 3 "" H 6550 1800 50  0001 C CNN
+	1    6550 1800
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6550 1650 6600 1650
+Wire Wire Line
+	6600 1650 6600 1500
+Connection ~ 6600 1500
+Wire Wire Line
+	6600 1500 6550 1500
+$EndSCHEMATC

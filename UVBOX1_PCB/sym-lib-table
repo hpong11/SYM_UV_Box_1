@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name UVC_Sym)(type Legacy)(uri ${KIPRJMOD}/UVC_Sym.lib)(options "")(descr ""))
+  (lib (name Untitled-rescue)(type Legacy)(uri ${KIPRJMOD}/Untitled-rescue.lib)(options "")(descr ""))
+  (lib (name stm32f103c8t6-module)(type Legacy)(uri ${KIPRJMOD}/stm32f103c8t6-module.lib)(options "")(descr ""))
+)
