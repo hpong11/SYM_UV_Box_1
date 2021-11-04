@@ -10,6 +10,7 @@
 #define OZ_FAN2 PB1
 #define UV_LAMP PB8
 #define OZ_LAMP PB5
+#define BUZZ PA10
 #include "TM1637.h"
 #define CLK PA0//pins definitions for TM1637 and can be changed to other ports
 #define DIO PA1
@@ -27,6 +28,8 @@
 #define Tim 2
 #define Ope 1
 #define FAN_SPEED 20000
+#define SwBeepTime 100
+
 
 TM1637 Disp7(CLK,DIO);
 int8_t ListDisp[4];
@@ -41,7 +44,7 @@ unsigned long CurrentSegBlinkMill = millis()- SegmentBlinkTime, CurrentSW_S = mi
 byte TimeOpe[5] = {2, 30, 60, 120, 180}, OpeUvTime, OpeOzTime;
 int CountDownmodeTime; //Secound
 unsigned long CurrentCountDownMill, CurrentOpeMill, CurrentF_FanMill;
-unsigned long CurrentPauseStartMill, CurrentPauseBlink;
+unsigned long CurrentPauseStartMill, CurrentPauseBlink, CurrentBuzzMill;
 byte PauseBlinkStatus;
 
 void Seven_Segment_Display(void);
@@ -50,6 +53,7 @@ void SegmentNumberDisp(unsigned int Numb);
 void TrunOnOzone(void);
 void TrunOnUV(void);
 void TrunOffAll(void);
+void BUZZ_Beep(unsigned int TimeBeep);
 
 void setup() {
   Disp7.init();
@@ -73,11 +77,12 @@ void setup() {
   pinMode(UV_LAMP, OUTPUT);
   pinMode(OZ_LAMP, OUTPUT);
   TrunOffAll();
+  pinMode(BUZZ, OUTPUT);
+  BUZZ_Beep(2000);
   Timer1.setPrescaleFactor(40);
   Timer1.setOverflow(65454);
   SetupModeDisp(SegBlinkMode);
   Serial.begin(115200);
-  
 }
 
 void loop() {
@@ -89,12 +94,14 @@ void loop() {
       if(TimeMode==4) TimeMode=0;
       else TimeMode++;
       SetupModeDisp(SegBlinkMode);
+      BUZZ_Beep(SwBeepTime);
     }
     if((digitalRead(SW_U) == 0) && (millis()-CurrentSW_U>=300)){
       CurrentSW_U = millis();
       if(OpeMode==2) OpeMode=0;
       else OpeMode++;
       SetupModeDisp(SegBlinkMode);
+      BUZZ_Beep(SwBeepTime);
     }
     
     if(digitalRead(SW_E) == 0){
@@ -108,6 +115,7 @@ void loop() {
         MainMode = ModeCoutD;
         Serial.println("Count Down Mode");
         CurrentCountDownMill = millis()+1000;
+        BUZZ_Beep(2000);
         CountDownmodeTime = 5;
         switch (OpeMode){
         case OZ_UV:
@@ -145,6 +153,7 @@ void loop() {
         }
         CurrentOpeMill = millis()+60000;
         CurrentF_FanMill = millis();
+        CurrentBuzzMill = millis()+5000;
       }
     }
     if((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)) {
@@ -157,6 +166,9 @@ void loop() {
       if(i>=100){
         MainMode = ModeSetup;
         SetupModeDisp(SegBlinkMode);
+        BUZZ_Beep(500);
+        delay(500);
+        BUZZ_Beep(500);
         while((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0));
         Serial.println("Setup Mode");
       }
@@ -205,8 +217,15 @@ void loop() {
       if(OpeUvTime<=0){
         TrunOffAll();
         MainMode = ModeSetup;
+        BUZZ_Beep(2000);
       }
     }
+
+    if(CurrentBuzzMill<=millis()){
+        BUZZ_Beep(200);
+        CurrentBuzzMill += 5000;
+    }
+
     if((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)||(digitalRead(SW_E) == 0)) {
       int i=0;
       for (i;i<=100;i++){
@@ -221,6 +240,7 @@ void loop() {
         CurrentPauseBlink = CurrentPauseStartMill + 500;
         PauseBlinkStatus = 0;
         Disp7.clearDisplay();
+        BUZZ_Beep(SwBeepTime);
         Serial.println("Mode Pause");
         while((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0)||(digitalRead(SW_E) == 0));
       }
@@ -251,6 +271,7 @@ void loop() {
       if(i>=1000){
         MainMode = ModeSetup;
         SetupModeDisp(SegBlinkMode);
+        BUZZ_Beep(1000);
         while((digitalRead(SW_U) == 0)||(digitalRead(SW_S) == 0));
         Serial.println("Setup Mode");
       }
@@ -268,6 +289,7 @@ void loop() {
       if(i>=2000) {
         Disp7.clearDisplay();
         MainMode = ModeCoutD; 
+        BUZZ_Beep(500);
         Serial.println("Count Down Mode");
         CurrentCountDownMill = millis()+1000;
         CountDownmodeTime = 5;
@@ -327,7 +349,7 @@ void TrunOnOzone(void){
   pwmWrite(OZ_FAN2, FAN_SPEED);
   pwmWrite(UV_FAN1, FAN_SPEED);
   pwmWrite(UV_FAN2, FAN_SPEED);
-  digitalWrite(OZ_LAMP, HIGH);
+  digitalWrite(OZ_LAMP, LOW);
 }
 
 void TrunOnUV(void){
@@ -336,18 +358,24 @@ void TrunOnUV(void){
   pwmWrite(OZ_FAN2, FAN_SPEED);
   pwmWrite(UV_FAN1, FAN_SPEED);
   pwmWrite(UV_FAN2, FAN_SPEED);
-  digitalWrite(UV_LAMP, HIGH);
+  digitalWrite(UV_LAMP, LOW);
 }
 
 void TrunOffAll(void){
   digitalWrite(R_LED, LOW);
   pwmWrite(OZ_FAN1, 0);
   pwmWrite(OZ_FAN2, 0);
-  digitalWrite(OZ_LAMP, LOW);
+  digitalWrite(OZ_LAMP, HIGH);
   digitalWrite(F_FAN, LOW);
 
   digitalWrite(G_LED, LOW);
   pwmWrite(UV_FAN1, 0);
   pwmWrite(UV_FAN2, 0);
-  digitalWrite(UV_LAMP, LOW);
+  digitalWrite(UV_LAMP, HIGH);
+}
+
+void BUZZ_Beep(unsigned int TimeBeep){
+  digitalWrite(BUZZ, LOW);
+  delay(TimeBeep);
+  digitalWrite(BUZZ, HIGH);
 }
